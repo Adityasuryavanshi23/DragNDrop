@@ -6,13 +6,11 @@ import CanvasItem from "./CanvasItem";
 import { generateObject } from "../utils";
 import { RigthSideBar } from "./RigthSideBar";
 
-// Define item types
 const ItemTypes = {
   SIDEBAR_ITEM: "sidebarItem",
   CANVAS_ITEM: "canvasItem",
 };
 
-// Draggable item component
 const DraggableItem = ({ id, content, isDraggable = true, type }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.SIDEBAR_ITEM,
@@ -42,7 +40,6 @@ const DraggableItem = ({ id, content, isDraggable = true, type }) => {
   );
 };
 
-// The main component that will be exported
 const CanvasState = () => {
   return (
     <DndProvider backend={HTML5Backend}>
@@ -51,7 +48,6 @@ const CanvasState = () => {
   );
 };
 
-// The actual content component that uses the DnD hooks
 const CanvasContent = () => {
   const [sidebarItems] = useState([
     { id: "image", type: "image", content: "Image" },
@@ -62,7 +58,6 @@ const CanvasContent = () => {
   const { canvasState, addToCanvasState } = useCanvasState((store) => store);
   const [isOver, setIsOver] = useState(false);
 
-  // Setup droppable for canvas
   const [{ isOver: dropIsOver }, drop] = useDrop(() => ({
     accept: ItemTypes.SIDEBAR_ITEM,
     drop: (item) => handleDrop(item),
@@ -75,23 +70,19 @@ const CanvasContent = () => {
     },
   }));
 
-  // Update isOver state when the drop monitor changes
   React.useEffect(() => {
     setIsOver(dropIsOver);
   }, [dropIsOver]);
 
   const handleDrop = (item) => {
     console.log("Item dropped:", item);
-    // Check if the item is from sidebar
     const sidebarItem = sidebarItems.find((sItem) => sItem.id === item.id);
     if (sidebarItem) {
-      // Create a new item with unique ID
       const newItem = {
         id: `${sidebarItem.id}-${Date.now()}`,
         type: item.type,
         data: generateObject(item.type),
       };
-      // Add to canvas
       addToCanvasState(newItem);
       console.log("Added item to canvas:", newItem);
     }
@@ -136,6 +127,7 @@ const CanvasContent = () => {
         </div>
       </div>
 
+      {/* Right Side Bar */}
       <RigthSideBar />
     </div>
   );
